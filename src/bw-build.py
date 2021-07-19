@@ -14,4 +14,4 @@ def bw_build():
     print("Hello there !")
 
 if __name__ == "__main__":
-    bw_build(
+    bw_build()
