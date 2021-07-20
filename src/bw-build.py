@@ -14,15 +14,42 @@ def parse_options():
     return parser.parse_args()
 
 def create_output(args, bw_transform_str, positions_index):
+    if (args.compress):
+        ATGC_dict = {
+            'A': 0b00,
+            'C': 0b01,
+            'G': 0b10,
+            'T': 0b11
+        }
+
+        dollar_position = bw_transform_str.index('$')
+        bw_transform_str = bw_transform_str.replace('$', '')
+
+        A_number = (4 - (len(bw_transform_str) % 4)) % 4
+        bw_transform_str += A_number * 'A'
+
+        compressed_bw_transform_str = []
+        for i in range(0, len(bw_transform_str), 4):
+            byte = ATGC_dict[bw_transform_str[i + 3]]
+            for j in range(2, -1, -1):
+                byte = byte << 2
+                byte += ATGC_dict[bw_transform_str[i + j]]
+            compressed_bw_transform_str.append(byte)
+
     c = 1 if args.compress else 0
-    n = bw_transform_str.index('$') if args.compress else 0
-    p = 0 if args.compress else 0
+    n = dollar_position if args.compress else 0
+    p = A_number if args.compress else 0
     f = args.f
 
     with open(args.outfile, 'w') as outfile:
         outfile.write("{} {} {} {}\n".format(c, n, p, f))
         outfile.write("{}\n".format(positions_index))
-        outfile.write(bw_transform_str)
+        if (not args.compress):
+            outfile.write(bw_transform_str)
+
+    if (args.compress):
+        with open(args.outfile, "ab") as outfile:
+            outfile.write(bytearray(compressed_bw_transform_str))
 
 def get_positions_index(sorted_list, frequency):
     res = [str(len(sorted_list) - sorted_list[i].index('$') - 1) for i in range(0, len(sorted_list), frequency)]
