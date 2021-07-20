@@ -14,17 +14,15 @@ def parse_options():
     return parser.parse_args()
 
 def create_output(args, bw_transform_str, positions_index):
-    outfile = open(args.outfile, 'w')
-
     c = 1 if args.compress else 0
     n = bw_transform_str.index('$') if args.compress else 0
     p = 0 if args.compress else 0
     f = args.f
 
-    outfile.write("{} {} {} {}\n".format(c, n, p, f))
-    outfile.write("{}\n".format(positions_index))
-    outfile.write(bw_transform_str)
-    outfile.close()
+    with open(args.outfile, 'w') as outfile:
+        outfile.write("{} {} {} {}\n".format(c, n, p, f))
+        outfile.write("{}\n".format(positions_index))
+        outfile.write(bw_transform_str)
 
 def get_positions_index(sorted_list, frequency):
     res = [str(len(sorted_list) - sorted_list[i].index('$') - 1) for i in range(0, len(sorted_list), frequency)]
@@ -33,9 +31,8 @@ def get_positions_index(sorted_list, frequency):
 def bw_build():
     args = parse_options()
 
-    f = open(args.infile, "r")
-    lines = f.readlines()[1:]
-    f.close()
+    with open(args.infile, "r") as f:
+        lines = f.readlines()[1:]
 
     sequence = "".join(lines).replace('\n', '') + '$'
 
