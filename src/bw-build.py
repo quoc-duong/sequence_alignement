@@ -1,6 +1,4 @@
 import argparse
-import numpy as np
-from numpy.core.fromnumeric import sort
 
 def get_all_rotations(s):
     return [s[i:] + s[:i] for i in range(len(s))]
