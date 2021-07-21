@@ -13,9 +13,6 @@ def bw_inverse_transform(bw_transformed):
         table = sorted(bw_transformed[i] + table[i] for i in range(len(bw_transformed)))
     return table
 
-def search(C, P):
-    i = len(P) - 1
-
 def get_occurrence(c, upper_bound, table):
     nb_occ = 0
 
@@ -71,7 +68,6 @@ def bw_search():
     else:
         for row in table[sp:ep]:
             print(len(row) - row.index('$') - 1)
-
 
 if __name__ == "__main__":
     bw_search()
