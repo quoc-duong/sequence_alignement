@@ -7,16 +7,23 @@ def parse_options():
     parser.add_argument("--count-only", dest='count-only', help="Only print the number of matches", action='store_true')
     return parser.parse_args()
 
+def bw_inverse_transform(bw_transformed):
+    table = [""] * len(bw_transformed)
+    for _ in range(len(bw_transformed)):
+        table = sorted(bw_transformed[i] + table[i] for i in range(len(bw_transformed)))
+    s = [row for row in table if row.endswith('$')][0]
+    return s.rstrip('$')
+
 def bw_search():
     args = parse_options()
 
-    with open(args.infile, "r") as f:
-        lines = f.readlines()[2:]
+    with open(args.infile, "r") as infile:
+        c, n, p, f = infile.readline().split()
+        positions_index = infile.readline()
+        bw_tranformed = infile.readlines()[0]
 
-    P = "".join(lines)
-    p = len(p)
-    c, i = P[p], p
-    sp = 
+    retrieved_seq =  bw_inverse_transform(bw_tranformed)
+    print(retrieved_seq)
 
 if __name__ == "__main__":
     bw_search()
