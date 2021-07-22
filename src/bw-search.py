@@ -48,21 +48,42 @@ def search(table, q):
         ep = C_index[C[c]] + get_occurrence(c, ep, table)
         i -= 1
 
-    if (ep < sp):
-        return -1
-    else:
-        return sp - 1, ep
+    return sp - 1, ep
+
+def decompress(bw_transformed):
+    ATGC_dict = {
+        0b00: 'A',
+        0b01: 'C',
+        0b10: 'G',
+        0b11: 'T'
+    }
+    result = ""
+    for i in range(len(bw_transformed)):
+        temp = bw_transformed[i]
+        for _ in range(4):
+            result += ATGC_dict[temp & 0b11]
+            temp = temp >> 2
+
+    return result
+
 
 def bw_search():
     args = parse_options()
 
-    with open(args.infile, "r") as infile:
-        c, n, p, f = infile.readline().split()
+    with open(args.infile, "rb") as infile:
+        c, n, p, f = [int(e) for e in infile.readline().split()]
         positions_index = infile.readline()
         bw_tranformed = infile.readlines()[0]
 
-    table = bw_inverse_transform(bw_tranformed)
+    if c:
+        bw_transformed = decompress(bw_tranformed)
+        bw_transformed = bw_transformed[:n] + '$' + bw_transformed[n:len(bw_transformed) - p]
+    else:
+        bw_transformed = bw_tranformed.decode('ascii')
+
+    table = bw_inverse_transform(bw_transformed)
     sp, ep = search(table, args.q)
+
     if args.count_only:
         print(ep - sp)
     else:
