@@ -7,8 +7,9 @@ def parse_options():
     parser = argparse.ArgumentParser(description='Search subsequence in a genome following the strategy of the bowtie tool')
     parser.add_argument("infile", help="Input file containing the sequence to process")
     parser.add_argument("outfile", help="Output file")
-    parser.add_argument("f", help="index creation frequence", type=int)
-    parser.add_argument("--compress", dest='compress', help="Compress option", action='store_true')
+    parser.add_argument("f", help="Index creation frequence", type=int)
+    parser.add_argument("--compress", dest='compress', help="Compress bwt", action='store_true')
+    parser.add_argument("--progressive", help="Construire l’index basé sur k graines", type=int)
     return parser.parse_args()
 
 def create_output(args, bw_transform_str, positions_index):
@@ -55,6 +56,8 @@ def get_positions_index(sorted_list, frequency):
 
 def bw_build():
     args = parse_options()
+
+    print(args.progressive)
 
     with open(args.infile, "r") as f:
         lines = f.readlines()[1:]
