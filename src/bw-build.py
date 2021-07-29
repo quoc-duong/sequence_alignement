@@ -64,11 +64,10 @@ def bw_build():
     sequence = "".join(lines).replace('\n', '') + '$'
 
     if args.progressive:
+        # Initialize variables
         bw_transform_str = ""
-
         current_f_count = 0
         positions_index = []
-
 
         sample_indexes = random.sample(range(len(sequence)), args.progressive)
         splitters = sorted(sequence[i:] + sequence[:i] for i in sample_indexes)
@@ -101,6 +100,7 @@ def bw_build():
                     positions_index.append(str(len(sequence) - bucket[j].index('$') - 1))
 
                 current_f_count = (current_f_count + 1) % args.f
+        positions_index = ','.join(positions_index)
 
     else:
         all_rotations_sorted = sorted(get_all_rotations(sequence))
